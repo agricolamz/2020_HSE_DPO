@@ -1,6 +1,6 @@
 --- 
-title: "HSE"
-author: "G. Moroz"
+title: "2020 SL HSE DPO"
+author: "Г. Мороз"
 date: "2020"
 bibliography:
 - bibliography.bib
