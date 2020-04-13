@@ -8,17 +8,8 @@ bookdown::gitbook:
       collapse: section
       before: |
         <li><a href="./">HSE DPO 2020</a></li>
-    download: ["pdf"]
+    download: []
     sharing: no
     edit:
       link: https://github.com/agricolamz/2020_HSE_DPO/edit/master/%s
       text: "Edit"
-bookdown::pdf_book:
-  includes:
-    in_header: preamble.tex
-  latex_engine: xelatex
-  citation_package: natbib
-  fig_width: 7
-  fig_height: 4
-  highlight: tango
-  
