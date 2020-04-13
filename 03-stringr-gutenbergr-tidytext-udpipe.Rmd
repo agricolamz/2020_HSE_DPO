@@ -1,0 +1,13 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+# Работа со строками и текстом: `stringr`, `gutenbergr`, `tidytext`, `udpipe` {#stringr}
+
+В начале мы будем использовать пакет `stringr` (входит в `tidyverse`), так что не забудьте загрузить библиотеку:
+
+```{r, message = FALSE}
+library(tidyverse)
+```
+

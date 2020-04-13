@@ -1,0 +1,13 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+# Трансформация и визуализация данных: `dplyr` и `ggplot2`{#dplyr}
+
+Во-первых, загрузите библиотеку:
+
+```{r, message=FALSE}
+library(tidyverse)
+```
+
