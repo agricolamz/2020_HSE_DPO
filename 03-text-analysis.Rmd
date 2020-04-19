@@ -14,14 +14,14 @@ theme_set(theme_bw())
 
 Для работы мы воспользуемся двумя датасетами:
 
-* Рассказыв М. Зощенко
+* Рассказы М. Зощенко
 
 ```{r,message=FALSE}
 zo <- read_csv("https://raw.githubusercontent.com/agricolamz/2020_HSE_DPO/master/data/zoshenko.csv")
 zo
 ```
 
-* [Курс начертательной геометрии под редакцией В.Гордона](https://raw.githubusercontent.com/agricolamz/2020_HSE_DPO/master/data/gordon_geometry.csv)
+* Курс начертательной геометрии под редакцией В.Гордона
 
 ```{r,message=FALSE}
 geom <- read_csv("https://raw.githubusercontent.com/agricolamz/2020_HSE_DPO/master/data/gordon_geometry.csv")
