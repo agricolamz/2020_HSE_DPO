@@ -7,6 +7,7 @@ editor_options:
 
 ```{r, message=FALSE}
 library(tidyverse)
+theme_set(theme_bw())
 ```
 
 ## Данные
@@ -50,6 +51,8 @@ geom_tokenized %>%
 all_texts
 ```
 
+## Tf-idf
+
 ## Генерация текста
 
 ## Анализ тональности
@@ -68,7 +71,7 @@ all_texts
 
 Мы будем использовать [датасет](https://raw.githubusercontent.com/agricolamz/2020_HSE_DPO/master/data/ru_sentiment_linis-crowd.csv), составленный на базе Linis Crowd
 
-```{r}
+```{r, fig.height=10, fig.width=14}
 ru_sentiments <- read_csv("https://raw.githubusercontent.com/agricolamz/2020_HSE_DPO/master/data/ru_sentiment_linis-crowd.csv")
 
 all_texts %>% 
@@ -76,11 +79,50 @@ all_texts %>%
   left_join(ru_sentiments, by = c("lemma" = "words")) %>% 
   mutate(value = ifelse(is.na(value), 0, value)) %>% 
   group_by(doc_id, sentence_id) %>% 
-  summarise(value = sum(value))
-  
-  
+  summarise(value = sum(value)) %>% 
+  mutate(color = ifelse(value >= 0, "positive", "negative")) %>% 
+  ggplot(aes(sentence_id, value, fill = color))+
+  geom_col()+
+  facet_wrap(~doc_id, scales = "free")
 ```
 
 
 ## Тематическое моделирование
+
+```{r}
+library(topicmodels)
+library(tidytext)
+
+all_texts %>% 
+  count(doc_id, lemma, sort = TRUE) %>%   
+  cast_dtm(doc_id, lemma, n) %>% 
+  LDA(k = 2, control = list(seed = 42)) ->
+  lda
+
+lda %>% 
+  tidy(matrix = "beta") %>% 
+  group_by(topic) %>%
+  top_n(15, beta) %>%
+  ungroup() %>%
+  arrange(topic, -beta) %>% 
+  mutate(term = reorder_within(term, beta, topic)) %>%
+  ggplot(aes(term, beta, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free") +
+  coord_flip() +
+  scale_x_reordered()
+
+lda %>% 
+  tidy(matrix = "beta") %>% 
+  mutate(topic = paste0("topic", topic)) %>%
+  spread(topic, beta) %>%
+  filter(topic1 > .006 | topic2 > .002) %>%
+  mutate(log_ratio = log2(topic2 / topic1),
+         term = fct_reorder(term, log_ratio)) %>% 
+  ggplot(aes(log_ratio, term))+
+  geom_col()
+
+lda %>% 
+  tidy(matrix = "gamma") 
+```
 
