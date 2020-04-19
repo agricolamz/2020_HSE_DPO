@@ -32,7 +32,7 @@
   
   
 <link rel="prev" href="strings.html"/>
-<link rel="next" href="сбор-данных-из-интернета-rvest.html"/>
+<link rel="next" href="анализ-текста.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -170,15 +170,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.2" data-path="tidytext.html"><a href="tidytext.html#библиотека-tidytext"><i class="fa fa-check"></i><b>3.2</b> Библиотека <code>tidytext</code></a></li>
 <li class="chapter" data-level="3.3" data-path="tidytext.html"><a href="tidytext.html#пакет-udpipe"><i class="fa fa-check"></i><b>3.3</b> Пакет <code>udpipe</code></a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="сбор-данных-из-интернета-rvest.html"><a href="сбор-данных-из-интернета-rvest.html"><i class="fa fa-check"></i><b>4</b> Сбор данных из интернета: <code>rvest</code></a><ul>
-<li class="chapter" data-level="4.1" data-path="сбор-данных-из-интернета-rvest.html"><a href="сбор-данных-из-интернета-rvest.html#введение"><i class="fa fa-check"></i><b>4.1</b> Введение</a></li>
-<li class="chapter" data-level="4.2" data-path="сбор-данных-из-интернета-rvest.html"><a href="сбор-данных-из-интернета-rvest.html#работа-с-пакетом-rvest"><i class="fa fa-check"></i><b>4.2</b> Работа с пакетом <code>rvest</code></a><ul>
-<li class="chapter" data-level="4.2.1" data-path="сбор-данных-из-интернета-rvest.html"><a href="сбор-данных-из-интернета-rvest.html#простой-случай"><i class="fa fa-check"></i><b>4.2.1</b> Простой случай</a></li>
-</ul></li>
-<li class="chapter" data-level="4.3" data-path="сбор-данных-из-интернета-rvest.html"><a href="сбор-данных-из-интернета-rvest.html#использование-атрибута-class"><i class="fa fa-check"></i><b>4.3</b> Использование атрибута <code>class</code></a><ul>
-<li class="chapter" data-level="4.3.1" data-path="сбор-данных-из-интернета-rvest.html"><a href="сбор-данных-из-интернета-rvest.html#чтение-таблиц"><i class="fa fa-check"></i><b>4.3.1</b> Чтение таблиц</a></li>
-<li class="chapter" data-level="4.3.2" data-path="сбор-данных-из-интернета-rvest.html"><a href="сбор-данных-из-интернета-rvest.html#некоторые-советы"><i class="fa fa-check"></i><b>4.3.2</b> Некоторые советы</a></li>
-</ul></li>
+<li class="chapter" data-level="4" data-path="анализ-текста.html"><a href="анализ-текста.html"><i class="fa fa-check"></i><b>4</b> Анализ текста</a><ul>
+<li class="chapter" data-level="4.1" data-path="анализ-текста.html"><a href="анализ-текста.html#анализ-тональности"><i class="fa fa-check"></i><b>4.1</b> Анализ тональности</a></li>
+<li class="chapter" data-level="4.2" data-path="анализ-текста.html"><a href="анализ-текста.html#тематическое-моделирование"><i class="fa fa-check"></i><b>4.2</b> Тематическое моделирование</a></li>
 </ul></li>
 </ul>
 
@@ -309,7 +303,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </p>
 </div>
 <pre><code>## Joining, by = &quot;word&quot;</code></pre>
-<p><img src="moroz-2020-HSE-DPO_files/figure-html/unnamed-chunk-82-1.png" width="672" /></p>
+<p><img src="moroz-2020-HSE-DPO_files/figure-html/unnamed-chunk-83-1.png" width="672" /></p>
 <p>Функция <code>unnest_tokens()</code> позволяет работать не только со словами, но и, напрмиер, с биграммами:</p>
 <div class="sourceCode" id="cb194"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb194-1"><a href="tidytext.html#cb194-1"></a>books <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb194-2"><a href="tidytext.html#cb194-2"></a><span class="st">  </span><span class="kw">unnest_tokens</span>(word, text, <span class="dt">token =</span> <span class="st">&quot;ngrams&quot;</span>, <span class="dt">n =</span> <span class="dv">2</span>)</span></code></pre></div>
@@ -327,7 +321,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb195-6"><a href="tidytext.html#cb195-6"></a><span class="st">  </span><span class="kw">ggplot</span>()<span class="op">+</span></span>
 <span id="cb195-7"><a href="tidytext.html#cb195-7"></a><span class="st">      </span><span class="kw">geom_vline</span>(<span class="kw">aes</span>(<span class="dt">xintercept =</span> narrative_time))<span class="op">+</span></span>
 <span id="cb195-8"><a href="tidytext.html#cb195-8"></a><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>word, <span class="dt">ncol =</span> <span class="dv">1</span>)</span></code></pre></div>
-<p><img src="moroz-2020-HSE-DPO_files/figure-html/unnamed-chunk-85-1.png" width="672" /></p>
+<p><img src="moroz-2020-HSE-DPO_files/figure-html/unnamed-chunk-86-1.png" width="672" /></p>
 </div>
 <div id="пакет-udpipe" class="section level2">
 <h2><span class="header-section-number">3.3</span> Пакет <code>udpipe</code></h2>
@@ -370,7 +364,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         </div>
       </div>
 <a href="strings.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="сбор-данных-из-интернета-rvest.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="анализ-текста.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

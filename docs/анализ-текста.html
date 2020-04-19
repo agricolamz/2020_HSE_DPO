@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>2020 SL HSE DPO</title>
-  <meta name="description" content="2020 SL HSE DPO" />
+  <title>4 Анализ текста | 2020 SL HSE DPO</title>
+  <meta name="description" content="4 Анализ текста | 2020 SL HSE DPO" />
   <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="2020 SL HSE DPO" />
+  <meta property="og:title" content="4 Анализ текста | 2020 SL HSE DPO" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="2020 SL HSE DPO" />
+  <meta name="twitter:title" content="4 Анализ текста | 2020 SL HSE DPO" />
   
   
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
+<link rel="prev" href="tidytext.html"/>
 
-<link rel="next" href="strings.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -52,9 +52,6 @@
 
 <link href="libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
 <script src="libs/pagedtable-1.1/js/pagedtable.js"></script>
-<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
-<link href="libs/str_view-0.1.0/str_view.css" rel="stylesheet" />
-<script src="libs/str_view-binding-1.4.0/str_view.js"></script>
 
 
 <style type="text/css">
@@ -171,8 +168,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.3" data-path="tidytext.html"><a href="tidytext.html#пакет-udpipe"><i class="fa fa-check"></i><b>3.3</b> Пакет <code>udpipe</code></a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="анализ-текста.html"><a href="анализ-текста.html"><i class="fa fa-check"></i><b>4</b> Анализ текста</a><ul>
-<li class="chapter" data-level="4.1" data-path="анализ-текста.html"><a href="анализ-текста.html#анализ-тональности"><i class="fa fa-check"></i><b>4.1</b> Анализ тональности</a></li>
-<li class="chapter" data-level="4.2" data-path="анализ-текста.html"><a href="анализ-текста.html#тематическое-моделирование"><i class="fa fa-check"></i><b>4.2</b> Тематическое моделирование</a></li>
+<li class="chapter" data-level="4.1" data-path="анализ-текста.html"><a href="анализ-текста.html#генерация-текста"><i class="fa fa-check"></i><b>4.1</b> Генерация текста</a></li>
+<li class="chapter" data-level="4.2" data-path="анализ-текста.html"><a href="анализ-текста.html#анализ-тональности"><i class="fa fa-check"></i><b>4.2</b> Анализ тональности</a></li>
+<li class="chapter" data-level="4.3" data-path="анализ-текста.html"><a href="анализ-текста.html#тематическое-моделирование"><i class="fa fa-check"></i><b>4.3</b> Тематическое моделирование</a></li>
 </ul></li>
 </ul>
 
@@ -191,34 +189,44 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">2020 SL HSE DPO</h1>
-<p class="author"><em>Г. Мороз</em></p>
-<p class="date"><em>2020</em></p>
+<div id="анализ-текста" class="section level1">
+<h1><span class="header-section-number">4</span> Анализ текста</h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="анализ-текста.html#cb1-1"></a><span class="kw">library</span>(tidyverse)</span></code></pre></div>
+<div id="генерация-текста" class="section level2">
+<h2><span class="header-section-number">4.1</span> Генерация текста</h2>
 </div>
-<div id="prerequisites" class="section level1">
-<h1><span class="header-section-number">1</span> Prerequisites</h1>
-<p>Перед началом занятий, я бы попросил вас скачать и установить программы необходимые для работы в классе:</p>
+<div id="анализ-тональности" class="section level2">
+<h2><span class="header-section-number">4.2</span> Анализ тональности</h2>
 <ul>
-<li>установите <strong>R</strong>, используя следующую ссылку: <a href="https://cloud.r-project.org/" class="uri">https://cloud.r-project.org/</a></li>
-<li>установите <strong>RStudio</strong>, используя следующую ссылку: <a href="https://rstudio.com/products/rstudio/download/#download" class="uri">https://rstudio.com/products/rstudio/download/#download</a> (FREE version, платить ничего не надо!)</li>
-<li>после установки запустите RStudio, напечатайте <code>2+2</code>, и нажмите <code>Enter</code>.</li>
-</ul>
-<p><img src="images/00.rstudio-view.png" /></p>
-<p>Если вы видите что-то такое, тогда вы готовы к занятиям.</p>
+<li><a href="http://linis-crowd.org/">Linis Crowd</a>
 <ul>
-<li>Так же вы можете зарегестрироваться в <a href="https://rstudio.cloud/" class="uri">https://rstudio.cloud/</a>. Это делать не обязательно, но это запасной вариант, если на вашем компьютере что-то не будет работать.</li>
+<li>лемма</li>
+<li>значение</li>
+<li>среднеквадратичное отклонение</li>
+</ul></li>
+<li><a href="http://www.labinform.ru/pub/rusentilex/index.htm">РуСентиЛекс</a>:
+<ul>
+<li>слово или словосочетание,</li>
+<li>часть речи или синтаксический тип группы,</li>
+<li>слово или словосочетание в лемматизированной форме,</li>
+<li>тональность: позитивная (positive), негативная(negative), нейтральная (neutral) или неопределеная оценка, зависит от контекста (positive/negative),</li>
+<li>источник: оценка (opinion), чувство (feeling), факт (fact),</li>
+<li>если тональность отличается для разных значений многозначного слова, то перечисляются все значения слова по тезаурусу РуТез и дается отсылка на сооветствующее понятие - имя понятия в кавычках.</li>
+</ul></li>
 </ul>
-<p>Я дисграфик — так что простите за все возможные опечатки.</p>
+</div>
+<div id="тематическое-моделирование" class="section level2">
+<h2><span class="header-section-number">4.3</span> Тематическое моделирование</h2>
 
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
+<a href="tidytext.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 
-<a href="strings.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -240,7 +248,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/agricolamz/2020_HSE_DPO/edit/master/index.Rmd",
+"link": "https://github.com/agricolamz/2020_HSE_DPO/edit/master/03-text-analysis.Rmd",
 "text": "Edit"
 },
 "history": {
