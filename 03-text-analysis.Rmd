@@ -9,6 +9,47 @@ editor_options:
 library(tidyverse)
 ```
 
+## Данные
+
+Для работы мы воспользуемся двумя датасетами:
+
+* Рассказыв М. Зощенко
+
+```{r}
+zo <- read_csv("https://raw.githubusercontent.com/agricolamz/2020_HSE_DPO/master/data/zoshenko.csv")
+zo
+```
+
+* [Курс начертательной геометрии под редакцией В.Гордона](https://raw.githubusercontent.com/agricolamz/2020_HSE_DPO/master/data/gordon_geometry.csv)
+
+```{r}
+geom <- read_csv("https://raw.githubusercontent.com/agricolamz/2020_HSE_DPO/master/data/gordon_geometry.csv")
+geom
+```
+
+Для начала лемматизируем полуичвшиеся тексты:
+
+```{r}
+library(udpipe)
+rus <- udpipe_load_model("russian-syntagrus-ud-2.4-190531.udpipe")
+geom <- udpipe(text, object = rus)
+zo <- udpipe(zo, object = rus)
+```
+
+Уберем стопслова и леммы, содержащие цифры и знаки препинания
+
+```{r}
+library(stopwords)
+sw <- tibble(lemma = stopwords(language = "ru"))
+
+geom %>% 
+  bind_rows(zo) %>% 
+  filter(!str_detect(lemma, "\\W|\\d")) %>% 
+  anti_join(sw) ->
+  all_texts
+all_texts
+```
+
 ## Генерация текста
 
 ## Анализ тональности
@@ -24,6 +65,11 @@ library(tidyverse)
     * тональность: позитивная (positive), негативная(negative), нейтральная (neutral) или неопределеная оценка, зависит от контекста (positive/negative),
     * источник: оценка (opinion), чувство (feeling), факт (fact),
     * если тональность отличается для разных значений многозначного слова, то перечисляются все значения слова по тезаурусу РуТез и дается отсылка на сооветствующее понятие - имя понятия в кавычках.
+
+```{r}
+
+```
+
 
 ## Тематическое моделирование
 
