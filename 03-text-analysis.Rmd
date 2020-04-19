@@ -15,25 +15,24 @@ library(tidyverse)
 
 * Рассказыв М. Зощенко
 
-```{r}
+```{r,message=FALSE}
 zo <- read_csv("https://raw.githubusercontent.com/agricolamz/2020_HSE_DPO/master/data/zoshenko.csv")
 zo
 ```
 
 * [Курс начертательной геометрии под редакцией В.Гордона](https://raw.githubusercontent.com/agricolamz/2020_HSE_DPO/master/data/gordon_geometry.csv)
 
-```{r}
+```{r,message=FALSE}
 geom <- read_csv("https://raw.githubusercontent.com/agricolamz/2020_HSE_DPO/master/data/gordon_geometry.csv")
-geom
 ```
 
 Для начала лемматизируем полуичвшиеся тексты:
 
-```{r}
+```{r, cache=TRUE}
 library(udpipe)
 rus <- udpipe_load_model("russian-syntagrus-ud-2.4-190531.udpipe")
-geom <- udpipe(text, object = rus)
-zo <- udpipe(zo, object = rus)
+geom_tokenized <- udpipe(geom, object = rus)
+zo_tokenized <- udpipe(zo, object = rus)
 ```
 
 Уберем стопслова и леммы, содержащие цифры и знаки препинания
@@ -42,10 +41,11 @@ zo <- udpipe(zo, object = rus)
 library(stopwords)
 sw <- tibble(lemma = stopwords(language = "ru"))
 
-geom %>% 
-  bind_rows(zo) %>% 
+geom_tokenized %>% 
+  bind_rows(zo_tokenized) %>% 
   filter(!str_detect(lemma, "\\W|\\d")) %>% 
-  anti_join(sw) ->
+  anti_join(sw) %>% 
+  select(doc_id, sentence_id, lemma) ->
   all_texts
 all_texts
 ```
@@ -66,8 +66,19 @@ all_texts
     * источник: оценка (opinion), чувство (feeling), факт (fact),
     * если тональность отличается для разных значений многозначного слова, то перечисляются все значения слова по тезаурусу РуТез и дается отсылка на сооветствующее понятие - имя понятия в кавычках.
 
-```{r}
+Мы будем использовать [датасет](https://raw.githubusercontent.com/agricolamz/2020_HSE_DPO/master/data/ru_sentiment_linis-crowd.csv), составленный на базе Linis Crowd
 
+```{r}
+ru_sentiments <- read_csv("https://raw.githubusercontent.com/agricolamz/2020_HSE_DPO/master/data/ru_sentiment_linis-crowd.csv")
+
+all_texts %>% 
+  group_by(doc_id) %>% 
+  left_join(ru_sentiments, by = c("lemma" = "words")) %>% 
+  mutate(value = ifelse(is.na(value), 0, value)) %>% 
+  group_by(doc_id, sentence_id) %>% 
+  summarise(value = sum(value))
+  
+  
 ```
 
 
