@@ -53,6 +53,23 @@ all_texts
 
 ## Tf-idf
 
+```{r, fig.height=10, fig.width=14}
+library(tidytext)
+all_texts %>% 
+  count(doc_id, lemma) %>% 
+  bind_tf_idf(lemma, doc_id, n) %>% 
+  arrange(tf_idf) %>% 
+  group_by(doc_id) %>% 
+  top_n(5) %>% 
+  ungroup() %>% 
+  mutate(lemma = reorder_within(lemma, tf_idf, doc_id)) %>% 
+  ggplot(aes(tf_idf, lemma))+
+  geom_col()+
+  facet_wrap(~doc_id, scales = "free")+
+  scale_y_reordered()
+```
+
+
 ## Генерация текста
 
 ## Анализ тональности
@@ -91,7 +108,6 @@ all_texts %>%
 
 ```{r}
 library(topicmodels)
-library(tidytext)
 
 all_texts %>% 
   count(doc_id, lemma, sort = TRUE) %>%   
