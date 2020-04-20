@@ -3,7 +3,7 @@ output: html_document
 editor_options: 
   chunk_output_type: console
 ---
-# Работа с текстами: `gutenbergr`, `tidytext`, `udpipe` {#tidytext}
+# Работа с текстами: `gutenbergr`, `tidytext`, `stopwords`, `udpipe` {#tidytext}
 
 ```{r,message=FALSE}
 library(tidyverse)
@@ -13,10 +13,18 @@ library(tidyverse)
 theme_set(theme_bw())
 ```
 
+## Загрузка текста в R
+
+В пакете `readr` (входит в `tidyverse`) для чтения текста есть функция `read_lines()`:
+
+```{r}
+
+```
+
 
 ## Пакет `gutenbergr`
 
-Пакет `gutenbergr` является API для очень старого [проекта Guttenberg](http://www.gutenberg.org/).
+Пакет `gutenbergr` является API для очень старого [проекта Gutenberg](http://www.gutenberg.org/).
 
 ```{r}
 library(gutenbergr)
