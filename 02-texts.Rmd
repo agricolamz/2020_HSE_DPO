@@ -30,6 +30,12 @@ length(t2)
 str_length(t2)
 ```
 
+При таком слиянии, стоит проверить, не было ли в анализируемом тексте знаков переноса, иначе они сольются неправильно:
+
+```{r}
+str_c(c("... она запо-", "лучила ..."), collapse = " ")
+```
+
 ## Пакет `gutenbergr`
 
 Пакет `gutenbergr` является API для очень старого [проекта Gutenberg](http://www.gutenberg.org/).
@@ -261,7 +267,6 @@ length(stopwords("ru", source = "stopwords-iso"))
 library(udpipe)
 ```
 
-
 Модели качаются очень долго.
 ```{r download_en_model, cache=TRUE}
 enmodel <- udpipe_download_model(language = "english")
@@ -281,7 +286,7 @@ rumodel <- udpipe_download_model(language = "russian-syntagrus")
 udpipe("Жила-была на свете крыса в морском порту Вальпараисо, на складе мяса и маиса, какао и вина.", object = rumodel)
 ```
 
-После того, как модель загружена можно уже к ней обращаться просто по имени:
+После того, как модель скачана можно уже к ней обращаться просто по имени файла:
 
 ```{r}
 udpipe("Жила-была на свете крыса в морском порту Вальпараисо, на складе мяса и маиса, какао и вина.", object = "russian-syntagrus-ud-2.4-190531.udpipe")
