@@ -13,7 +13,6 @@ library(tidyverse)
 theme_set(theme_bw())
 ```
 
-
 ## Данные
 
 Для работы мы воспользуемся двумя датасетами:
@@ -55,6 +54,38 @@ geom_tokenized %>%
 all_texts
 ```
 
+
+```{block, type = "rmdtask"}
+Используйте библиотеку `gutenbergr` и скачайте "Чувство и чувствительность"(Sense and Sensibility, gutenberg_id = 161)	и "Гордость и предубеждение" ("Pride and Prejudice", gutenberg_id = 1342). Приведите тексты к tidy формату и уберите стопслова (английские стопслова есть в переменной `stop_words` пакета `tidytext`).
+```
+
+```{r, include=FALSE}
+library(gutenbergr)
+library(tidytext)
+austin <- gutenberg_download(c(161, 1342))
+
+austin %>% 
+  unnest_tokens("word", text) %>% 
+  anti_join(stop_words) ->
+  austin_form  
+
+austin_form %>% 
+  count(gutenberg_id) ->
+  answers
+```
+
+* Приведите, сколько получилось слов в романе "Чувство и чувствительность" после удаления стопслов:
+```{r, echo=FALSE, results="asis"}
+library(checkdown)
+check_question(answers$n[1])
+```
+
+* Приведите, сколько получилось слов в романе "Гордость и предубеждение" после удаления стопслов:
+```{r, echo=FALSE, results="asis"}
+library(checkdown)
+check_question(answers$n[2])
+```
+
 ## tf-idf
 
 tf-idf --- важная мера, которая позволяет выделять важные для текста слова.
@@ -79,9 +110,44 @@ all_texts %>%
   scale_y_reordered()
 ```
 
+Давайте попробуем посчитать всего Зощенко одним корпусом:
 
+```{r}
+all_texts %>% 
+  mutate(doc_id = ifelse(doc_id != "gordon_geometry", "zoshenko", "gordon_geometry")) %>% 
+  count(doc_id, lemma) %>% 
+  bind_tf_idf(lemma, doc_id, n) %>% 
+  arrange(tf_idf) %>% 
+  group_by(doc_id) %>% 
+  top_n(20) %>% 
+  ungroup() %>% 
+  mutate(lemma = reorder_within(lemma, tf_idf, doc_id)) %>% 
+  ggplot(aes(tf_idf, lemma))+
+  geom_col()+
+  facet_wrap(~doc_id, scales = "free")+
+  scale_y_reordered()
+```
 
-## Подсказка слова
+```{block, type = "rmdtask"}
+Используя созданную ранее переменную с текстами Джейн Остин без стопслов, выделите по 20 слов, важных для каждого романа.
+```
+
+```{r, echo = FALSE, message=FALSE}
+austin_form %>% 
+  count(gutenberg_id, word) %>% 
+  bind_tf_idf(word, gutenberg_id, n) %>% 
+  arrange(tf_idf) %>% 
+  group_by(gutenberg_id) %>% 
+  top_n(20) %>% 
+  ungroup() %>% 
+  mutate(word = reorder_within(word, tf_idf, gutenberg_id)) %>% 
+  ggplot(aes(tf_idf, word))+
+  geom_col()+
+  facet_wrap(~gutenberg_id, scales = "free")+
+  scale_y_reordered()
+```
+
+## Предиктивный ввод текста
 
 На прошлом занятии мы разобрались, что пакет `tidytext` позволяет делить не только на отдльные слова, но и смотреть на биграммы. Частотность биграмм можно использовать в подсказке слова, которую мы видим в наших телефонах:
 
@@ -109,22 +175,50 @@ bigrams %>%
   filter(word_1 == "ждет")
 
 bigrams %>% 
-  filter(word_1 == "а")
+  filter(word_1 == "а") %>% 
+  head()
 
 bigrams %>% 
-  filter(word_1 == "я")
+  filter(word_1 == "я") %>% 
+  head()
 
 bigrams %>% 
-  filter(word_1 == "говорю")
+  filter(word_1 == "говорю") %>% 
+  head()
 
 bigrams %>% 
-  filter(word_1 == "не")
+  filter(word_1 == "не") %>% 
+  head()
 
 bigrams %>% 
-  filter(word_1 == "могу")
+  filter(word_1 == "могу") %>% 
+  head()
 ```
 
-На большом корпусе результаты будут лучше, но легко предсатвить, как сделать из этого рабочую функцию.
+Вот мы и получили предложение "Однажды днем присела ждет, а я говорю: 'не могу'". На большом корпусе результаты будут лучше, но легко предсатвить, как сделать из этого рабочую функцию. Можно переиначить задачу и работать с символами, тогда это будет ближе к T9 на современных телефонах.
+
+
+```{r, include = FALSE}
+austin %>% 
+  unnest_tokens("bigram", text, token = "ngrams", n = 2) %>% 
+  separate(bigram, into = c("word_1", "word_2")) %>% 
+  count(word_1, word_2) ->
+  bigrams
+
+bigrams %>% 
+  filter(word_1 == "should") %>% 
+  top_n(6) %>% 
+  arrange(-n)
+```
+
+
+```{block, type = "rmdtask"}
+Используя тексты обоих романов создайте генератор текстов, основанный на биграммах. Какое трехсловное предложение получится, если выбирать самое частотную пару, и начать со слова *I*?
+```
+
+```{r, echo = FALSE, results='asis'}
+check_question(answer = "I am sure", options = c("I was there", "I am sure", "I should go"))
+```
 
 ## Анализ тональности
 
@@ -157,41 +251,52 @@ all_texts %>%
   facet_wrap(~doc_id, scales = "free")
 ```
 
-
 ## Тематическое моделирование
+
+LDA (Latent Dirichlet allocation) --- один из базовых способов, используемый в тематическом моделировании. Основное идея алгаритма, заключается в том, что каждый текст может являтся смесью тем, а каждая тема имеет вероятность более высокую вероятность генерировать некоторые слова, и более низкую вероятность генерировать слова общие для всех тем. На вход подается посчитанный список слов для каждого текста.
 
 ```{r}
 library(topicmodels)
 
 all_texts %>% 
-  count(doc_id, lemma, sort = TRUE) %>%   
-  cast_dtm(doc_id, lemma, n) %>% 
-  LDA(k = 2, control = list(seed = 42)) ->
+  count(doc_id, lemma) %>%   
+  cast_dtm(doc_id, lemma, n) %>% # особая функция 
+  LDA(k = 2, # количество тем
+      control = list(seed = 42) # повзоляет воспроизвести один и тот же анализ, можно убрать
+      ) ->
   lda
+```
 
+Посмотрим, какие слова характерны для какой темы (т. е. самые частотные в теме):
+```{r}
 lda %>% 
-  tidy(matrix = "beta") %>% 
+  tidy(matrix = "beta") %>%  # приводим модель в tidy формат
   group_by(topic) %>%
   top_n(15, beta) %>%
   ungroup() %>%
-  arrange(topic, -beta) %>% 
   mutate(term = reorder_within(term, beta, topic)) %>%
   ggplot(aes(term, beta, fill = factor(topic))) +
   geom_col(show.legend = FALSE) +
-  facet_wrap(~ topic, scales = "free") +
+  facet_wrap(~topic, scales = "free") +
   coord_flip() +
   scale_x_reordered()
+```
 
+Посмотрим, какие слова специфичны для каждой из тем (т. е. частота значительно больше в одной теме, чем в другой):
+```{r}
 lda %>% 
   tidy(matrix = "beta") %>% 
   mutate(topic = paste0("topic", topic)) %>%
   spread(topic, beta) %>%
-  filter(topic1 > .006 | topic2 > .002) %>%
+  filter(topic1 > .006 | topic2 > .002) %>% # эти значения нужно вручную подбирать
   mutate(log_ratio = log2(topic2 / topic1),
          term = fct_reorder(term, log_ratio)) %>% 
   ggplot(aes(log_ratio, term))+
   geom_col()
+```
 
+Посмотрим на распределение текстов по темам:
+```{r}
 lda %>% 
   tidy(matrix = "gamma") 
 ```
